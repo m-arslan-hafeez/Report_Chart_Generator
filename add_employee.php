@@ -65,12 +65,29 @@
                 width: 80%;
             }
         }
+        .dashboard-btn {
+        padding: 10px 20px;
+        background-color: #8e44ad;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-btn:hover {
+        background-color: #9b59b6;
+    }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Employee Data Form</h2>
-        <button onclick="window.location.href='index.php'" style="padding: 5px; background-color:yellow; margin-left: 5px; margin-bottom: 10px;"><= Back</button>
+        <button class="dashboard-btn" onclick="window.location.href='index.php'">Back</button>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group">
                 <label for="employeeName">Employee Name:</label>
@@ -136,7 +153,7 @@
                 <label for="residentialCity">Residential City:</label>
                 <input type="text" id="residentialCity" name="residentialCity" required>
             </div>
-            <input type="submit" value="Submit">
+            <input class="dashboard-btn" type="submit" value="Submit">
         </form>
     </div>
 

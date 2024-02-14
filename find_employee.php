@@ -82,25 +82,43 @@
         .employee-list li p {
             margin: 0;
         }
+        .dashboard-btn {
+        padding: 10px 20px;
+        background-color: #8e44ad;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-btn:hover {
+        background-color: #9b59b6;
+    }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Employee Search</h2>
+        <button class="dashboard-btn" onclick="window.location.href='index.php'">Back</button>
         <div class="search-form">
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="get">
                 <input type="text" name="search" placeholder="Enter employee name">
-                <input type="submit" value="Search">
+                <input class="dashboard-btn" type="submit" value="Search">
             </form>
         </div>
         
         <?php
-        // PHP script for searching employees
+
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
-            $servername = "localhost"; // Change this to your servername
-            $username = "root"; // Change this to your username
-            $password = ""; // Change this to your password
-            $dbname = "employees"; // Change this to your database name
+            $servername = "localhost"; 
+            $username = "root"; 
+            $password = ""; 
+            $dbname = "employees"; 
 
             // Create a connection
             $conn = new mysqli($servername, $username, $password, $dbname);
@@ -114,7 +132,6 @@
             // Search query
             $sql = "SELECT * FROM employees_info WHERE employeeName LIKE '%$search%'";
             $result = $conn->query($sql);
-
             if ($result->num_rows > 0) {
                 echo "<ul class='employee-list'>";
                 while ($row = $result->fetch_assoc()) {

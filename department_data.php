@@ -17,13 +17,31 @@
         th {
             background-color: #f2f2f2;
         }
+        .dashboard-btn {
+        padding: 10px 20px;
+        background-color: #8e44ad;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-btn:hover {
+        background-color: #9b59b6;
+    }
     </style>
 </head>
 <body style="background-color:aliceblue">
     <h2>Selected Department Data</h2>
-    <button onclick="window.location.href='index.php'" style="padding: 5px; background-color:yellow; margin-left: 5px; margin-bottom: 10px;"><= Back</button>
-    <table>
-        <tr>
+    <button class="dashboard-btn" onclick="window.location.href='index.php'">Back</button>
+    <table id="employee-table">
+        <thead>
+            <tr>
             <th style="background-color: aquamarine;">Employee Name</th>
             <th style="background-color: aquamarine;">Employee ID</th>
             <th style="background-color: yellow;">Department Name</th>
@@ -40,56 +58,54 @@
             <th style="background-color: aquamarine;">Home Address</th>
             <th style="background-color: aquamarine;">ID Card Number</th>
             <th style="background-color: aquamarine;">Residential City</th>
-        </tr>
-        <?php
-        // MySQL Database connection details
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $dbname = "employees";
-
-        // Create connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
-
-        // Check connection
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-
-        // Retrieve department name from the query parameter
-        $department = $_GET['department'];
-
-        // Prepare SQL query to select data based on department
-        $sql = "SELECT * FROM employees_info WHERE departmentName = '$department'";
-        $result = $conn->query($sql);
-
-        if ($result->num_rows > 0) {
-            // Output data of each row
-            while($row = $result->fetch_assoc()) {
-                echo "<tr>";
-                echo "<td>".$row['employeeName']."</td>";
-                echo "<td>".$row['employeeID']."</td>";
-                echo "<td>".$row['departmentName']."</td>";
-                echo "<td>".$row['role']."</td>";
-                echo "<td>".$row['joiningDate']."</td>";
-                echo "<td>".$row['monthlySalary']."</td>";
-                echo "<td>".$row['projectsCompleted']."</td>";
-                echo "<td>".$row['teamLeadName']."</td>";
-                echo "<td>".$row['numLeavesPerMonth']."</td>";
-                echo "<td>".$row['numOfficialLeaves']."</td>";
-                echo "<td>".$row['allowedLeaves']."</td>";
-                echo "<td>".$row['unpaidLeaves']."</td>";
-                echo "<td>".$row['overtimeHours']."</td>";
-                echo "<td>".$row['homeAddress']."</td>";
-                echo "<td>".$row['idCardNumber']."</td>";
-                echo "<td>".$row['residentialCity']."</td>";
-                echo "</tr>";
-            }
-        } else {
-            echo "0 results";
-        }
-        $conn->close();
-        ?>
+            </tr>
+        </thead>
+        <tbody id="employee-data">
+            <!-- Data will be dynamically added here -->
+        </tbody>
     </table>
+
+    <script>
+        // Function to fetch data from the API and populate the table
+        function fetchDepartmentData() {
+            var department = '<?php echo isset($_GET["department"]) ? $_GET["department"] : "" ?>';
+            fetch('api_getDepart/api.php?department=' + department)
+            .then(response => response.json())
+            .then(data => {
+                var employeeData = document.getElementById('employee-data');
+                employeeData.innerHTML = ''; // Clear previous data
+                if(data.error) {
+                    employeeData.innerHTML = '<tr><td colspan="3">' + data.error + '</td></tr>';
+                } else {
+                    data.forEach(function(employee) {
+                        var row = '<tr>';
+                        row += '<td>' + employee.employeeName + '</td>';
+                        row += '<td>' + employee.employeeID + '</td>';
+                        row += '<td>' + employee.departmentName + '</td>';
+                        row += '<td>' + employee.role + '</td>';
+                        row += '<td>' + employee.joiningDate + '</td>';
+                        row += '<td>' + employee.monthlySalary + '</td>';
+                        row += '<td>' + employee.projectsCompleted + '</td>';
+                        row += '<td>' + employee.teamLeadName + '</td>';
+                        row += '<td>' + employee.numLeavesPerMonth + '</td>';
+                        row += '<td>' + employee.numOfficialLeaves + '</td>';
+                        row += '<td>' + employee.allowedLeaves + '</td>';
+                        row += '<td>' + employee.unpaidLeaves + '</td>';
+                        row += '<td>' + employee.overtimeHours + '</td>';
+                        row += '<td>' + employee.homeAddress + '</td>';
+                        row += '<td>' + employee.idCardNumber + '</td>';
+                        row += '<td>' + employee.residentialCity + '</td>';
+                        row += '</tr>';
+                        employeeData.innerHTML += row;
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+        // Call the function when the page loads
+        fetchDepartmentData();
+    </script>
 </body>
 </html>
